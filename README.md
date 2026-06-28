@@ -1,61 +1,72 @@
-# 🌦️ Прогноз дощу в Австралії (Streamlit)
+# 🌦️ Will It Rain Tomorrow?
 
-Веб-застосунок, що передбачає, **чи піде завтра дощ** (`RainTomorrow`), на основі
-сьогоднішніх метеоспостережень. Це домашнє завдання модуля 5 (деплоймент ML-моделі
-зі Streamlit) курсу ML.
+A Streamlit web app that predicts whether it will **rain tomorrow** in Australia
+(`RainTomorrow`) based on today's weather observations.
 
-Модель — **логістична регресія**, навчена на датасеті
-[weatherAUS](https://www.kaggle.com/datasets/jsphyg/weather-dataset-rattle-package)
-(≈10 років щоденних спостережень з австралійських метеостанцій).
+The model is a **logistic regression** trained on the
+[weatherAUS dataset](https://www.kaggle.com/datasets/jsphyg/weather-dataset-rattle-package)
+(~10 years of daily observations from numerous Australian weather stations).
 
-## Як це працює
+## How it works
 
-Файл `models/aussie_rain.joblib` — це словник, що містить не лише модель, а й усі
-компоненти препроцесингу:
+The file `models/aussie_rain.joblib` is not just a model — it's a dictionary that
+bundles the trained estimator together with every preprocessing component needed
+for inference:
 
-| Ключ | Призначення |
-|------|-------------|
-| `model` | навчена `LogisticRegression` |
-| `imputer` | `SimpleImputer` — імпутація пропущених числових значень (середнім) |
-| `scaler` | `MinMaxScaler` — масштабування числових ознак |
-| `encoder` | `OneHotEncoder` — кодування категоріальних ознак |
-| `input_cols`, `numeric_cols`, `categorical_cols`, `encoded_cols` | списки колонок |
+| Key | Purpose |
+|-----|---------|
+| `model` | trained `LogisticRegression` |
+| `imputer` | `SimpleImputer` — fills missing numeric values (mean strategy) |
+| `scaler` | `MinMaxScaler` — scales numeric features |
+| `encoder` | `OneHotEncoder` — encodes categorical features |
+| `input_cols`, `numeric_cols`, `categorical_cols`, `encoded_cols` | column metadata |
 
-Коли користувач натискає кнопку прогнозу, введені дані проходять **той самий
-потік препроцесингу**, що й на лекції:
+When the user clicks the predict button, the raw input goes through the full
+preprocessing pipeline before reaching the model:
 
-1. імпутація пропущених числових значень (`imputer`);
-2. масштабування числових ознак (`scaler`);
-3. one-hot кодування категоріальних ознак (`encoder`);
-4. прогноз моделлю + ймовірність (`predict` / `predict_proba`).
+1. impute missing numeric values (`imputer`);
+2. scale numeric features (`scaler`);
+3. one-hot encode categorical features (`encoder`);
+4. predict the class and probability (`predict` / `predict_proba`).
 
-## Структура проєкту
+The app then shows whether rain is expected tomorrow (Yes/No) along with the
+predicted probability.
+
+## Project structure
 
 ```
 weather_streamlit_app/
-├── app.py                      # застосунок Streamlit
+├── app.py                      # Streamlit application
 ├── models/
-│   └── aussie_rain.joblib      # модель + компоненти препроцесингу
-├── requirements.txt            # залежності
+│   └── aussie_rain.joblib      # model + preprocessing components
+├── requirements.txt            # dependencies
 └── README.md
 ```
 
-## Запуск локально
+## Run locally
 
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Застосунок відкриється за адресою `http://localhost:8501`.
+The app will be available at `http://localhost:8501`.
 
-## Деплой на Streamlit Community Cloud
+## Deploy on Streamlit Community Cloud
 
-1. Залийте цю папку в **публічний** GitHub-репозиторій (`git push`).
-2. Зайдіть на [share.streamlit.io](https://share.streamlit.io), увійдіть через GitHub.
-3. **New app** → оберіть репозиторій, гілку та головний файл `app.py`.
-4. **Deploy** — за хвилину отримаєте публічне посилання.
+1. Push this project to a **public** GitHub repository.
+2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
+3. **Create app** → select the repository, branch, and set the main file to `app.py`.
+4. **Deploy** — you'll get a public URL in a couple of minutes.
 
-> ⚠️ Модель збережено на `scikit-learn==1.8.0`, тому ця версія закріплена в
-> `requirements.txt` — інакше можливі попередження про несумісність версій під час
-> розпакування моделі.
+> ⚠️ The model was saved with `scikit-learn==1.8.0`, so that version is pinned in
+> `requirements.txt`. Using a different version may trigger compatibility warnings
+> when unpickling the model.
+
+## Tech stack
+
+- **Python**
+- **scikit-learn** — model & preprocessing
+- **Streamlit** — web UI
+- **pandas / numpy** — data handling
+- **joblib** — model persistence
