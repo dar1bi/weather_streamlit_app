@@ -3,6 +3,9 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+# set_page_config має бути найпершою Streamlit-командою у скрипті
+st.set_page_config(page_title="Чи піде завтра дощ?", page_icon="🌧️", layout="centered")
+
 MODEL_PATH = "models/aussie_rain.joblib"
 
 
@@ -56,8 +59,6 @@ def predict_rain(user_input: dict):
 # ---------------------------------------------------------------------------
 # Інтерфейс
 # ---------------------------------------------------------------------------
-st.set_page_config(page_title="Чи піде завтра дощ?", page_icon="🌧️", layout="centered")
-
 st.title("🌦️ Прогноз дощу в Австралії")
 st.markdown(
     "Цей застосунок передбачає, **чи піде завтра дощ** (`RainTomorrow`), "
