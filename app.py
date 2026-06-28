@@ -54,7 +54,8 @@ st.title("🌦️ Прогноз дощу в Австралії")
 st.markdown(
     "Цей застосунок передбачає, **чи піде завтра дощ** (`RainTomorrow`), "
     "на основі сьогоднішніх метеоспостережень. "
-    "Модель — логістична регресія, навчена на датасеті *weatherAUS*."
+    "Модель — логістична регресія, навчена на датасеті "
+    "[weatherAUS](https://www.kaggle.com/datasets/jsphyg/weather-dataset-rattle-package)."
 )
 st.divider()
 
