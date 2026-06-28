@@ -28,20 +28,20 @@ def predict_rain(user_input: dict):
 
     input_df = pd.DataFrame([user_input], columns=input_cols)
 
-    # 1-2. Числові ознаки: імпутація + масштабування
+    # Числові ознаки: імпутація + масштабування
     input_df[numeric_cols] = imputer.transform(input_df[numeric_cols])
     input_df[numeric_cols] = scaler.transform(input_df[numeric_cols])
 
-    # 3. Категоріальні ознаки: one-hot кодування
+    # Категоріальні ознаки: one-hot кодування
     encoded = encoder.transform(input_df[categorical_cols])
     encoded_df = pd.DataFrame(encoded, columns=encoded_cols, index=input_df.index)
 
-    # 4. Формуємо фінальний набір ознак і прогнозуємо
+    # Формуємо фінальний набір ознак і прогнозуємо
     X = pd.concat([input_df[numeric_cols], encoded_df], axis=1)[numeric_cols + encoded_cols]
     prediction = model.predict(X)[0]
     probability = model.predict_proba(X)[0]
 
-    # Ймовірність саме класу "Yes" (буде дощ)
+    # Ймовірність класу "Yes" (буде дощ)
     classes = list(model.classes_)
     prob_yes = probability[classes.index("Yes")]
     return prediction, prob_yes
