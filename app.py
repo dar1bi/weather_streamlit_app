@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-# set_page_config має бути найпершою Streamlit-командою у скрипті
 st.set_page_config(page_title="Чи піде завтра дощ?", page_icon="🌧️", layout="centered")
 
 MODEL_PATH = "models/aussie_rain.joblib"
@@ -11,7 +10,6 @@ MODEL_PATH = "models/aussie_rain.joblib"
 
 @st.cache_resource
 def load_model():
-    """Завантажуємо збережений словник з моделлю та компонентами препроцесингу."""
     return joblib.load(MODEL_PATH)
 
 
@@ -27,14 +25,7 @@ encoded_cols = aussie_rain["encoded_cols"]
 
 
 def predict_rain(user_input: dict):
-    """Повний потік: сирі дані -> препроцесинг -> прогноз.
 
-    Повторюємо ту саму обробку, що й на лекції:
-    1. імпутація пропущених числових значень (imputer);
-    2. масштабування числових ознак (scaler);
-    3. one-hot кодування категоріальних ознак (encoder);
-    4. прогноз моделлю + ймовірність.
-    """
     input_df = pd.DataFrame([user_input], columns=input_cols)
 
     # 1-2. Числові ознаки: імпутація + масштабування
@@ -67,7 +58,7 @@ st.markdown(
 )
 st.divider()
 
-# Категорії беремо напряму з навченого енкодера, щоб гарантовано збігалися
+# Категорії беремо напряму з навченого енкодера
 locations = [c for c in encoder.categories_[categorical_cols.index("Location")] if c != "nan"]
 wind_dirs = [c for c in encoder.categories_[categorical_cols.index("WindGustDir")] if c != "nan"]
 
@@ -108,7 +99,7 @@ with col4:
 
 st.divider()
 
-if st.button("🔮 Спрогнозувати погоду на завтра", type="primary", use_container_width=True):
+if st.button("Спрогнозувати погоду на завтра", type="primary", use_container_width=True):
     user_input = {
         "Location": location,
         "MinTemp": min_temp,
@@ -142,4 +133,3 @@ if st.button("🔮 Спрогнозувати погоду на завтра", t
 
     st.metric("Ймовірність дощу завтра", f"{prob_yes * 100:.1f}%")
     st.progress(float(prob_yes))
-    st.caption("Прогноз зроблено логістичною регресією. Це навчальний проєкт — не використовуйте для реальних рішень 🙂")
